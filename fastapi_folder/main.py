@@ -45,7 +45,7 @@ class HisotricalTableGoogl(base):
     high = Column(DOUBLE_PRECISION)
     low = Column(DOUBLE_PRECISION)
     close = Column(DOUBLE_PRECISION)
-    Colume = Column(DOUBLE_PRECISION)
+    volume = Column(DOUBLE_PRECISION)
     dividends = Column(DOUBLE_PRECISION)
     stocksplits = Column(DOUBLE_PRECISION)
 
@@ -58,7 +58,7 @@ class HisotricalTableMsft(base):
     high = Column(DOUBLE_PRECISION)
     low = Column(DOUBLE_PRECISION)
     close = Column(DOUBLE_PRECISION)
-    Colume = Column(DOUBLE_PRECISION)
+    volume = Column(DOUBLE_PRECISION)
     dividends = Column(DOUBLE_PRECISION)
     stocksplits = Column(DOUBLE_PRECISION)
 
@@ -78,7 +78,7 @@ class TicketReqest(BaseModel):
     query: str
 
 
-class TicketResponse(BaseModel):
+class TickerResponse(BaseModel):
     ticker: str
     close_value: float
 
@@ -102,3 +102,11 @@ async def get_ticker_record(ticker_request: TicketReqest, db=Depends(get_db)):
 
     if ticker_request.query == 'recent':
         record = get_recent(db, table)
+
+    else:
+        record = get_oldest(db, table)
+
+    return TickerResponse(ticker=ticker_request.ticker, close_value=record.close)
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=5000)
